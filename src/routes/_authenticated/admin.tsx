@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
-import { Shield, Users, Sparkles, BarChart3, Activity, Save, MapPin } from "lucide-react";
+import { Shield, Users, Sparkles, BarChart3, Activity, Save, MapPin, Plus, Trash2, Upload, UserCircle2 } from "lucide-react";
 import { TYPE_LABEL } from "@/lib/project-types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
