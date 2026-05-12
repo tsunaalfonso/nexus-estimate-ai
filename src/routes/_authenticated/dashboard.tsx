@@ -27,6 +27,7 @@ function Dashboard() {
       const { data } = await supabase
         .from("projects")
         .select("*, estimations(*)")
+        .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       return data ?? [];
     },
