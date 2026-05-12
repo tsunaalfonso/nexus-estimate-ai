@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { MapPin, Mail, Phone, Target, Eye, Building2 } from "lucide-react";
+import { MapPin, Mail, Phone, Target, Eye, Building2, Users, UserCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteNav } from "@/components/site-nav";
 import { AnimatedBg } from "@/components/animated-bg";
@@ -23,6 +23,14 @@ function AboutPage() {
     queryFn: async () => {
       const { data } = await supabase.from("site_settings").select("*").eq("id", "main").single();
       return data;
+    },
+  });
+
+  const { data: team } = useQuery({
+    queryKey: ["team-members"],
+    queryFn: async () => {
+      const { data } = await supabase.from("team_members").select("*").order("sort_order").order("created_at");
+      return data ?? [];
     },
   });
 
@@ -81,7 +89,33 @@ function AboutPage() {
                 <div>
                   <div className="font-semibold">{s.office_name}</div>
                   <div className="text-xs text-muted-foreground">{s.office_address}</div>
-                </div>
+        </div>
+
+        {/* Team */}
+        {team && team.length > 0 && (
+          <section className="mt-16">
+            <div className="text-center mb-8">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs uppercase tracking-wider bg-primary/15 text-primary border border-primary/30">
+                <Users className="h-3.5 w-3.5" /> Our team
+              </span>
+              <h2 className="mt-3 font-display text-3xl font-bold">Meet the people behind NPAV Tech</h2>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {team.map((m: any) => (
+                <article key={m.id} className="glass rounded-2xl p-6 text-center group hover:shadow-elevated transition-shadow">
+                  <div className="mx-auto h-28 w-28 rounded-full overflow-hidden bg-secondary/40 grid place-items-center ring-2 ring-primary/20 group-hover:ring-primary/50 transition">
+                    {m.photo_url
+                      ? <img src={m.photo_url} alt={m.name} className="h-full w-full object-cover" loading="lazy" />
+                      : <UserCircle2 className="h-14 w-14 text-muted-foreground" />}
+                  </div>
+                  <h3 className="mt-4 font-display text-lg font-semibold">{m.name}</h3>
+                  {m.role && <div className="text-sm text-primary">{m.role}</div>}
+                  {m.bio && <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{m.bio}</p>}
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
               </div>
               <a href={fullMap} target="_blank" rel="noreferrer" className="text-xs text-primary hover:underline">Open in OpenStreetMap →</a>
             </div>
