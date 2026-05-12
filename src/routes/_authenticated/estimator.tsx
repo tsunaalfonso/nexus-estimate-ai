@@ -19,12 +19,14 @@ const schema = z.object({
   description: z.string().trim().min(20, "Add a bit more detail (≥20 chars)").max(2000),
 });
 
+type Component = { name: string; category: string; qty: number; unit_price: number; notes: string };
 type Result = {
   cost_min: number; cost_max: number;
   timeline_weeks_min: number; timeline_weeks_max: number;
   complexity_score: number; risk_level: string;
   tech_stack: string[];
   breakdown: { phases: { name: string; cost: number; weeks: number; notes: string }[] };
+  components?: Component[];
   explanation: string; model: string;
 };
 
@@ -218,6 +220,45 @@ function Estimator() {
               ))}
             </div>
           </div>
+
+          {result.components && result.components.length > 0 && (
+            <div className="glass rounded-2xl p-6">
+              <div className="text-xs uppercase tracking-wider text-muted-foreground mb-4">Suggested components & parts</div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="text-left text-xs uppercase tracking-wider text-muted-foreground border-b border-border/40">
+                      <th className="py-2 pr-3">Item</th>
+                      <th className="py-2 pr-3">Category</th>
+                      <th className="py-2 pr-3 text-right">Qty</th>
+                      <th className="py-2 pr-3 text-right">Unit (₱)</th>
+                      <th className="py-2 pr-3 text-right">Subtotal (₱)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {result.components.map((c, i) => (
+                      <tr key={i} className="border-b border-border/20 last:border-0">
+                        <td className="py-2 pr-3">
+                          <div className="font-medium">{c.name}</div>
+                          {c.notes && <div className="text-xs text-muted-foreground">{c.notes}</div>}
+                        </td>
+                        <td className="py-2 pr-3 text-muted-foreground text-xs">{c.category}</td>
+                        <td className="py-2 pr-3 text-right">{c.qty}</td>
+                        <td className="py-2 pr-3 text-right">₱{Number(c.unit_price).toLocaleString()}</td>
+                        <td className="py-2 pr-3 text-right font-semibold">₱{(Number(c.qty) * Number(c.unit_price)).toLocaleString()}</td>
+                      </tr>
+                    ))}
+                    <tr className="bg-primary/5">
+                      <td colSpan={4} className="py-2 pr-3 text-right font-semibold">Total</td>
+                      <td className="py-2 pr-3 text-right font-bold text-primary">
+                        ₱{result.components.reduce((a, c) => a + Number(c.qty) * Number(c.unit_price), 0).toLocaleString()}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
 
           <div className="flex flex-wrap gap-3">
             <Button variant="outline" onClick={() => { setStep(1); setResult(null); setTitle(""); setDescription(""); setFeatures(""); }}>New estimation</Button>

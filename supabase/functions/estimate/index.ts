@@ -10,14 +10,20 @@ const SYSTEM_PROMPT = `You are NPAV Tech's senior project estimation engine. You
 IMPORTANT: Do NOT overprice. Use local Philippine freelance/student rates, not US agency rates. Be conservative and fair.
 
 Pricing context (PHP, Philippine local market — keep estimates within these typical ranges):
-- Thesis/research: ₱1,500 – ₱15,000 (most common ₱3,000–₱8,000)
-- Arduino projects: ₱1,000 – ₱8,000 (parts + light labor)
+- Thesis/research: ₱1,500 – ₱15,000
+- Arduino projects: ₱1,000 – ₱8,000
 - Raspberry Pi projects: ₱2,000 – ₱15,000
-- Web development: ₱3,000 – ₱60,000 (simple sites ₱3k–₱10k, full apps up to ₱60k)
+- Web development: ₱3,000 – ₱60,000
 - Mobile apps: ₱8,000 – ₱120,000
-- Invitation websites (birthday/wedding/christening): ₱500 – ₱3,000
+- Invitation websites: ₱500 – ₱3,000
 
-Phase costs in the breakdown must sum close to the cost_min/cost_max range and use PHP. Always reason about: scope, integrations, complexity, hardware count, deadlines. Be honest about risk. Tech stack must match the project type. Never quote in USD.`;
+ALWAYS populate the "components" list with the SPECIFIC parts, modules, libraries, services, or materials the project needs, each with a realistic local PHP unit price and quantity. Examples:
+- Hardware: "Arduino Uno R3" ₱450, "DHT22 sensor" ₱180, "LCD 16x2" ₱120, "Jumper wires (40pcs)" ₱60, "Breadboard" ₱90, "Raspberry Pi 4 4GB" ₱3,200
+- Software/web: "Domain (.com /yr)" ₱650, "Hosting (1 yr shared)" ₱1,200, "Vercel/Supabase free tier" ₱0, "Figma Pro (optional)" ₱0
+- Thesis: "Printing & binding" ₱500, "Documentation editing" ₱800, "Statistical analysis tool" ₱0
+- Mobile: "Google Play developer account (one-time)" ₱1,400, "Apple Developer (per yr)" ₱5,500
+
+Phase costs in the breakdown must use PHP and roughly sum to within cost_min/cost_max. Tech stack and components must match the project type. Never quote in USD.`;
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -75,11 +81,27 @@ Return a complete, transparent estimation. Be specific.`;
               required: ["phases"],
               additionalProperties: false,
             },
+            components: {
+              type: "array",
+              description: "Specific parts/modules/services needed with PHP unit price and quantity. Always include 4-12 items.",
+              items: {
+                type: "object",
+                properties: {
+                  name: { type: "string", description: "Component or item name" },
+                  category: { type: "string", description: "e.g. Hardware, Sensor, Software, Service, Material" },
+                  qty: { type: "number" },
+                  unit_price: { type: "number", description: "Local price in PHP" },
+                  notes: { type: "string", description: "Short reason or where to get it" },
+                },
+                required: ["name", "category", "qty", "unit_price", "notes"],
+                additionalProperties: false,
+              },
+            },
             explanation: { type: "string", description: "Why this estimate? 3-5 sentences." },
           },
           required: [
             "cost_min", "cost_max", "timeline_weeks_min", "timeline_weeks_max",
-            "complexity_score", "risk_level", "tech_stack", "breakdown", "explanation",
+            "complexity_score", "risk_level", "tech_stack", "breakdown", "components", "explanation",
           ],
           additionalProperties: false,
         },
