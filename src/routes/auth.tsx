@@ -83,7 +83,7 @@ function AuthPage() {
             Get realistic cost & timeline estimates for any project — backed by structured AI reasoning, not vague guesses.
           </p>
           <div className="mt-10 space-y-4">
-            {["3 free estimations to start","Chat with NOVA, your AI assistant","Save, compare & track every project"].map((t) => (
+            {["3 free estimations to start","Chat with Cael, your AI assistant","Save, compare & track every project"].map((t) => (
               <div key={t} className="flex items-center gap-3 glass rounded-xl px-4 py-3">
                 <div className="h-2 w-2 rounded-full bg-primary anim-pulse-glow" />
                 <span className="text-sm">{t}</span>

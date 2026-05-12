@@ -41,7 +41,7 @@ function Landing() {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-muted-foreground">
             <span className="inline-flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-primary" /> 100% free</span>
             <span className="inline-flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-primary" /> Unlimited estimates</span>
-            <span className="inline-flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-primary" /> Powered by Gemini</span>
+            <span className="inline-flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-primary" /> Filipino-friendly pricing</span>
           </div>
         </div>
 
@@ -114,9 +114,9 @@ function Landing() {
         </div>
         <div className="mt-12 grid md:grid-cols-3 gap-6">
           {[
-            { icon: Sparkles, title: "Describe your project", body: "Pick a type and answer a smart structured form. NOVA helps you fill the gaps." },
+            { icon: Sparkles, title: "Describe your project", body: "Pick a type and answer a smart structured form. Cael helps you fill the gaps." },
             { icon: Brain, title: "AI analyses scope", body: "Our engine reasons over scope, complexity, integrations & risk to produce a defensible estimate." },
-            { icon: BarChart3, title: "Refine & export", body: "Chat with NOVA to refine. Save, compare, and (soon) export PDF reports." },
+            { icon: BarChart3, title: "Refine & export", body: "Chat with Cael to refine. Save, compare, and (soon) export PDF reports." },
           ].map((s, i) => (
             <div key={i} className="glass rounded-2xl p-7 relative overflow-hidden">
               <div className="absolute -right-6 -top-6 text-[7rem] font-display font-bold text-primary/5 leading-none">{i+1}</div>
