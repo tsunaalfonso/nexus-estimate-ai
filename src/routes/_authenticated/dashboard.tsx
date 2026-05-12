@@ -61,7 +61,7 @@ function Dashboard() {
         {[
           { label: "Projects", value: projects.length, icon: FolderKanban },
           { label: "Estimations", value: totalEstimations, icon: Sparkles },
-          { label: "Avg. cost", value: avgCost ? `$${avgCost.toLocaleString()}` : "—", icon: TrendingUp },
+          { label: "Avg. cost", value: avgCost ? `₱${avgCost.toLocaleString()}` : "—", icon: TrendingUp },
           { label: "Plan", value: profile?.plan?.toUpperCase() ?? "FREE", icon: Clock },
         ].map((s) => (
           <div key={s.label} className="glass rounded-2xl p-5">
@@ -102,7 +102,7 @@ function Dashboard() {
                     <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
                       <div className="rounded-lg bg-secondary/40 px-3 py-2">
                         <div className="text-muted-foreground">Cost</div>
-                        <div className="font-semibold">${Number(est.cost_min).toLocaleString()}–${Number(est.cost_max).toLocaleString()}</div>
+                        <div className="font-semibold">₱{Number(est.cost_min).toLocaleString()}–₱{Number(est.cost_max).toLocaleString()}</div>
                       </div>
                       <div className="rounded-lg bg-secondary/40 px-3 py-2">
                         <div className="text-muted-foreground">Timeline</div>

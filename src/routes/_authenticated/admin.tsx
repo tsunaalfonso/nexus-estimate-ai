@@ -61,7 +61,7 @@ function Admin() {
           { label: "Total users", value: profiles.length, icon: Users },
           { label: "Total projects", value: projects.length, icon: BarChart3 },
           { label: "Total estimations", value: estimations.length, icon: Sparkles },
-          { label: "Avg estimate", value: avgCost ? `$${avgCost.toLocaleString()}` : "—", icon: Activity },
+          { label: "Avg estimate", value: avgCost ? `₱${avgCost.toLocaleString()}` : "—", icon: Activity },
         ].map((s) => (
           <div key={s.label} className="glass rounded-2xl p-5">
             <div className="flex items-center justify-between">
