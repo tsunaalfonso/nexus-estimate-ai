@@ -34,7 +34,7 @@ function Estimator() {
   const [type, setType] = useState<ProjectTypeId | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [budget, setBudget] = useState<number>(5000);
+  const [budget, setBudget] = useState<number>(3000);
   const [urgency, setUrgency] = useState<number>(5);
   const [features, setFeatures] = useState("");
   const [loading, setLoading] = useState(false);
@@ -47,7 +47,7 @@ function Estimator() {
 
     setLoading(true);
     try {
-      const scope = { budget_hint_usd: budget, urgency_1_to_10: urgency, feature_list: features.split(/[,\n]/).map((s) => s.trim()).filter(Boolean) };
+      const scope = { budget_hint_php: budget, urgency_1_to_10: urgency, feature_list: features.split(/[,\n]/).map((s) => s.trim()).filter(Boolean) };
 
       const { data: projectRow, error: pErr } = await supabase.from("projects")
         .insert({ user_id: user.id, title, type, description, scope }).select("id").single();
@@ -142,8 +142,8 @@ function Estimator() {
               </div>
               <div className="grid sm:grid-cols-2 gap-5">
                 <div>
-                  <Label>Approx. budget hint: ${budget.toLocaleString()}</Label>
-                  <Slider value={[budget]} min={50} max={150000} step={50} onValueChange={(v) => setBudget(v[0])} className="mt-3" />
+                  <Label>Approx. budget hint: ₱{budget.toLocaleString()}</Label>
+                  <Slider value={[budget]} min={500} max={120000} step={500} onValueChange={(v) => setBudget(v[0])} className="mt-3" />
                 </div>
                 <div>
                   <Label>Urgency: {urgency}/10</Label>
@@ -184,7 +184,7 @@ function Estimator() {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Stat label="Cost range" value={`$${Number(result.cost_min).toLocaleString()} – $${Number(result.cost_max).toLocaleString()}`} accent="from-primary/20" />
+            <Stat label="Cost range" value={`₱${Number(result.cost_min).toLocaleString()} – ₱${Number(result.cost_max).toLocaleString()}`} accent="from-primary/20" />
             <Stat label="Timeline" value={`${result.timeline_weeks_min} – ${result.timeline_weeks_max} weeks`} accent="from-accent/20" />
             <Stat label="Complexity" value={`${result.complexity_score} / 10`} accent="from-amber-500/20" />
             <Stat label="Risk" value={result.risk_level} accent={
@@ -211,7 +211,7 @@ function Estimator() {
                 <div key={i} className="rounded-xl border border-border/40 bg-secondary/30 p-4">
                   <div className="flex items-center justify-between gap-3">
                     <div className="font-semibold">{ph.name}</div>
-                    <div className="text-sm text-muted-foreground whitespace-nowrap">${Number(ph.cost).toLocaleString()} · {ph.weeks} wk</div>
+                    <div className="text-sm text-muted-foreground whitespace-nowrap">₱{Number(ph.cost).toLocaleString()} · {ph.weeks} wk</div>
                   </div>
                   <p className="mt-1 text-sm text-muted-foreground">{ph.notes}</p>
                 </div>
