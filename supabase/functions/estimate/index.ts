@@ -5,17 +5,19 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const SYSTEM_PROMPT = `You are NPAV Tech's senior project estimation engine. You produce realistic, defensible cost & timeline estimations for software, hardware, and academic projects.
+const SYSTEM_PROMPT = `You are NPAV Tech's senior project estimation engine. You produce realistic, AFFORDABLE, student- and SMB-friendly cost & timeline estimations for the Philippine market. All prices are in Philippine Pesos (PHP, ₱).
 
-Pricing context (USD baseline, global market):
-- Thesis/research: $150–$2,500 depending on field, length, novelty
-- Arduino: $80–$1,200 (parts + dev labor)
-- Raspberry Pi: $150–$3,500
-- Web development: $500–$60,000+
-- Mobile apps: $2,000–$120,000+
-- Invitation websites (birthday/wedding/christening): $40–$600
+IMPORTANT: Do NOT overprice. Use local Philippine freelance/student rates, not US agency rates. Be conservative and fair.
 
-Always reason about: scope breadth, integrations, data complexity, design polish, hardware count, deadlines, team availability. Be honest about risk. Tech stack must match the project type.`;
+Pricing context (PHP, Philippine local market — keep estimates within these typical ranges):
+- Thesis/research: ₱1,500 – ₱15,000 (most common ₱3,000–₱8,000)
+- Arduino projects: ₱1,000 – ₱8,000 (parts + light labor)
+- Raspberry Pi projects: ₱2,000 – ₱15,000
+- Web development: ₱3,000 – ₱60,000 (simple sites ₱3k–₱10k, full apps up to ₱60k)
+- Mobile apps: ₱8,000 – ₱120,000
+- Invitation websites (birthday/wedding/christening): ₱500 – ₱3,000
+
+Phase costs in the breakdown must sum close to the cost_min/cost_max range and use PHP. Always reason about: scope, integrations, complexity, hardware count, deadlines. Be honest about risk. Tech stack must match the project type. Never quote in USD.`;
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -41,8 +43,8 @@ Return a complete, transparent estimation. Be specific.`;
         parameters: {
           type: "object",
           properties: {
-            cost_min: { type: "number", description: "Minimum realistic cost in USD" },
-            cost_max: { type: "number", description: "Maximum realistic cost in USD" },
+            cost_min: { type: "number", description: "Minimum realistic cost in PHP (Philippine Pesos)" },
+            cost_max: { type: "number", description: "Maximum realistic cost in PHP (Philippine Pesos)" },
             timeline_weeks_min: { type: "integer" },
             timeline_weeks_max: { type: "integer" },
             complexity_score: { type: "integer", minimum: 1, maximum: 10 },
