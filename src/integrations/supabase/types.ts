@@ -192,6 +192,57 @@ export type Database = {
         }
         Relationships: []
       }
+      site_settings: {
+        Row: {
+          about_body: string
+          about_subtitle: string
+          about_title: string
+          contact_email: string
+          contact_phone: string
+          hero_tagline: string
+          id: string
+          mission: string
+          office_address: string
+          office_lat: number
+          office_lng: number
+          office_name: string
+          updated_at: string
+          vision: string
+        }
+        Insert: {
+          about_body?: string
+          about_subtitle?: string
+          about_title?: string
+          contact_email?: string
+          contact_phone?: string
+          hero_tagline?: string
+          id?: string
+          mission?: string
+          office_address?: string
+          office_lat?: number
+          office_lng?: number
+          office_name?: string
+          updated_at?: string
+          vision?: string
+        }
+        Update: {
+          about_body?: string
+          about_subtitle?: string
+          about_title?: string
+          contact_email?: string
+          contact_phone?: string
+          hero_tagline?: string
+          id?: string
+          mission?: string
+          office_address?: string
+          office_lat?: number
+          office_lng?: number
+          office_name?: string
+          updated_at?: string
+          vision?: string
+        }
+        Relationships: []
+      }
       usage_events: {
         Row: {
           created_at: string
