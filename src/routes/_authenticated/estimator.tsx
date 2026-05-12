@@ -19,12 +19,14 @@ const schema = z.object({
   description: z.string().trim().min(20, "Add a bit more detail (≥20 chars)").max(2000),
 });
 
+type Component = { name: string; category: string; qty: number; unit_price: number; notes: string };
 type Result = {
   cost_min: number; cost_max: number;
   timeline_weeks_min: number; timeline_weeks_max: number;
   complexity_score: number; risk_level: string;
   tech_stack: string[];
   breakdown: { phases: { name: string; cost: number; weeks: number; notes: string }[] };
+  components?: Component[];
   explanation: string; model: string;
 };
 
