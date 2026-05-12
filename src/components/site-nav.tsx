@@ -21,6 +21,7 @@ export function SiteNav() {
 
         <nav className="hidden md:flex items-center gap-1 text-sm">
           <Link to="/" activeOptions={{ exact: true }} className="px-3 py-2 text-muted-foreground hover:text-foreground" activeProps={{ className: "text-foreground" }}>Home</Link>
+          <Link to="/about" className="px-3 py-2 text-muted-foreground hover:text-foreground" activeProps={{ className: "text-foreground" }}>About</Link>
           {user && <Link to="/dashboard" className="px-3 py-2 text-muted-foreground hover:text-foreground" activeProps={{ className: "text-foreground" }}>Dashboard</Link>}
           {user && <Link to="/estimator" className="px-3 py-2 text-muted-foreground hover:text-foreground" activeProps={{ className: "text-foreground" }}>New Estimate</Link>}
           {isAdmin && <Link to="/admin" className="px-3 py-2 text-muted-foreground hover:text-foreground inline-flex items-center gap-1" activeProps={{ className: "text-foreground" }}><Shield className="h-3.5 w-3.5" />Admin</Link>}
