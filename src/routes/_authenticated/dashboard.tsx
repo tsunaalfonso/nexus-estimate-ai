@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Plus, FolderKanban, Sparkles, TrendingUp, Clock } from "lucide-react";
+import { Plus, FolderKanban, Sparkles, TrendingUp, Clock, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { TYPE_LABEL } from "@/lib/project-types";
+import { downloadEstimationPdf } from "@/lib/estimation-pdf";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({ component: Dashboard });
 
