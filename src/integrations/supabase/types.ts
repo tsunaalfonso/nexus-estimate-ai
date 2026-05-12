@@ -14,16 +14,252 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      chat_conversations: {
+        Row: {
+          created_at: string
+          id: string
+          title: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          title?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          title?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      chat_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "chat_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      estimations: {
+        Row: {
+          breakdown: Json
+          complexity_score: number
+          cost_max: number
+          cost_min: number
+          created_at: string
+          currency: string
+          explanation: string | null
+          id: string
+          model: string | null
+          project_id: string
+          risk_level: string
+          tech_stack: Json
+          timeline_weeks_max: number
+          timeline_weeks_min: number
+          user_id: string
+        }
+        Insert: {
+          breakdown?: Json
+          complexity_score: number
+          cost_max: number
+          cost_min: number
+          created_at?: string
+          currency?: string
+          explanation?: string | null
+          id?: string
+          model?: string | null
+          project_id: string
+          risk_level: string
+          tech_stack?: Json
+          timeline_weeks_max: number
+          timeline_weeks_min: number
+          user_id: string
+        }
+        Update: {
+          breakdown?: Json
+          complexity_score?: number
+          cost_max?: number
+          cost_min?: number
+          created_at?: string
+          currency?: string
+          explanation?: string | null
+          id?: string
+          model?: string | null
+          project_id?: string
+          risk_level?: string
+          tech_stack?: Json
+          timeline_weeks_max?: number
+          timeline_weeks_min?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "estimations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          estimations_used: number
+          full_name: string | null
+          id: string
+          plan: Database["public"]["Enums"]["plan_tier"]
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          estimations_used?: number
+          full_name?: string | null
+          id: string
+          plan?: Database["public"]["Enums"]["plan_tier"]
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          estimations_used?: number
+          full_name?: string | null
+          id?: string
+          plan?: Database["public"]["Enums"]["plan_tier"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          scope: Json
+          title: string
+          type: Database["public"]["Enums"]["project_type"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          scope?: Json
+          title: string
+          type: Database["public"]["Enums"]["project_type"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          scope?: Json
+          title?: string
+          type?: Database["public"]["Enums"]["project_type"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      usage_events: {
+        Row: {
+          created_at: string
+          event: string
+          id: string
+          metadata: Json
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event: string
+          id?: string
+          metadata?: Json
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event?: string
+          id?: string
+          metadata?: Json
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
+      plan_tier: "free" | "pro" | "business"
+      project_type:
+        | "thesis"
+        | "arduino"
+        | "raspberry_pi"
+        | "web"
+        | "mobile"
+        | "invitation"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +386,17 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+      plan_tier: ["free", "pro", "business"],
+      project_type: [
+        "thesis",
+        "arduino",
+        "raspberry_pi",
+        "web",
+        "mobile",
+        "invitation",
+      ],
+    },
   },
 } as const
