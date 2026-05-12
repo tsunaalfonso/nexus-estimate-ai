@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
-import jsPDF from "jspdf";
+import { downloadEstimationPdf } from "@/lib/estimation-pdf";
 import { Sparkles, Loader2, ArrowRight, Brain, Check, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
