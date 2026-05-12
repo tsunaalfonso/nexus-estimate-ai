@@ -142,7 +142,167 @@ function Admin() {
       </div>
 
       <SiteSettingsEditor />
+      <TeamEditor />
     </main>
+  );
+}
+
+function TeamEditor() {
+  const qc = useQueryClient();
+  const { data: members } = useQuery({
+    queryKey: ["team-members-admin"],
+    queryFn: async () => {
+      const { data } = await supabase.from("team_members").select("*").order("sort_order").order("created_at");
+      return data ?? [];
+    },
+  });
+  const [draft, setDraft] = useState({ name: "", role: "", bio: "", photo_url: "" as string | null, sort_order: 0 });
+  const [uploading, setUploading] = useState(false);
+
+  async function uploadPhoto(file: File, onUrl: (url: string) => void) {
+    setUploading(true);
+    try {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `${crypto.randomUUID()}.${ext}`;
+      const { error } = await supabase.storage.from("team-photos").upload(path, file, { upsert: false, contentType: file.type });
+      if (error) throw error;
+      const { data } = supabase.storage.from("team-photos").getPublicUrl(path);
+      onUrl(data.publicUrl);
+      toast.success("Photo uploaded");
+    } catch (e: any) {
+      toast.error(e.message ?? "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  const add = useMutation({
+    mutationFn: async () => {
+      if (!draft.name.trim()) throw new Error("Name is required");
+      const { error } = await supabase.from("team_members").insert({
+        name: draft.name.trim(),
+        role: draft.role.trim(),
+        bio: draft.bio.trim(),
+        photo_url: draft.photo_url || null,
+        sort_order: Number(draft.sort_order) || 0,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Team member added");
+      setDraft({ name: "", role: "", bio: "", photo_url: "", sort_order: 0 });
+      qc.invalidateQueries({ queryKey: ["team-members-admin"] });
+      qc.invalidateQueries({ queryKey: ["team-members"] });
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+
+  const update = useMutation({
+    mutationFn: async (m: any) => {
+      const { error } = await supabase.from("team_members").update({
+        name: m.name, role: m.role, bio: m.bio, photo_url: m.photo_url, sort_order: Number(m.sort_order) || 0,
+      }).eq("id", m.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Saved");
+      qc.invalidateQueries({ queryKey: ["team-members-admin"] });
+      qc.invalidateQueries({ queryKey: ["team-members"] });
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+
+  const remove = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("team_members").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Removed");
+      qc.invalidateQueries({ queryKey: ["team-members-admin"] });
+      qc.invalidateQueries({ queryKey: ["team-members"] });
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+
+  return (
+    <div className="mt-8 glass rounded-2xl p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h3 className="font-semibold">Team members (About page)</h3>
+          <p className="text-xs text-muted-foreground">Add, edit and remove people shown on the public About page.</p>
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-border/40 p-4 mb-6">
+        <div className="text-sm font-medium mb-3 flex items-center gap-2"><Plus className="h-4 w-4 text-primary" /> Add new member</div>
+        <div className="grid md:grid-cols-[120px_1fr] gap-4">
+          <div>
+            <div className="aspect-square rounded-xl overflow-hidden bg-secondary/40 grid place-items-center border border-border/40">
+              {draft.photo_url
+                ? <img src={draft.photo_url} alt="" className="h-full w-full object-cover" />
+                : <UserCircle2 className="h-10 w-10 text-muted-foreground" />}
+            </div>
+            <label className="mt-2 inline-flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-md border border-border/60 px-2 py-1.5 text-xs hover:bg-accent">
+              <Upload className="h-3.5 w-3.5" /> {uploading ? "Uploading…" : "Upload"}
+              <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadPhoto(f, (url) => setDraft({ ...draft, photo_url: url })); }} />
+            </label>
+          </div>
+          <div className="space-y-3">
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div><Label>Name</Label><Input value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} placeholder="Paul Arvy Alfonso" /></div>
+              <div><Label>Role</Label><Input value={draft.role} onChange={(e) => setDraft({ ...draft, role: e.target.value })} placeholder="Founder & Lead Engineer" /></div>
+            </div>
+            <div><Label>Bio</Label><Textarea rows={2} value={draft.bio} onChange={(e) => setDraft({ ...draft, bio: e.target.value })} placeholder="Short bio…" /></div>
+            <div className="flex items-end gap-3">
+              <div className="w-28"><Label>Order</Label><Input type="number" value={draft.sort_order} onChange={(e) => setDraft({ ...draft, sort_order: Number(e.target.value) })} /></div>
+              <Button onClick={() => add.mutate()} disabled={add.isPending} className="bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-glow">
+                <Plus className="h-4 w-4" /> {add.isPending ? "Adding…" : "Add member"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        {(members ?? []).map((m: any) => (
+          <TeamRow key={m.id} member={m} onSave={(v) => update.mutate(v)} onDelete={() => remove.mutate(m.id)} onUpload={uploadPhoto} />
+        ))}
+        {(members ?? []).length === 0 && <div className="text-sm text-muted-foreground">No team members yet.</div>}
+      </div>
+    </div>
+  );
+}
+
+function TeamRow({ member, onSave, onDelete, onUpload }: { member: any; onSave: (m: any) => void; onDelete: () => void; onUpload: (f: File, cb: (url: string) => void) => void }) {
+  const [m, setM] = useState(member);
+  useEffect(() => setM(member), [member]);
+  return (
+    <div className="rounded-xl border border-border/40 p-4">
+      <div className="grid grid-cols-[96px_1fr] gap-3">
+        <div>
+          <div className="aspect-square rounded-xl overflow-hidden bg-secondary/40 grid place-items-center border border-border/40">
+            {m.photo_url
+              ? <img src={m.photo_url} alt={m.name} className="h-full w-full object-cover" />
+              : <UserCircle2 className="h-8 w-8 text-muted-foreground" />}
+          </div>
+          <label className="mt-2 inline-flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-md border border-border/60 px-2 py-1 text-[11px] hover:bg-accent">
+            <Upload className="h-3 w-3" /> Replace
+            <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) onUpload(f, (url) => setM({ ...m, photo_url: url })); }} />
+          </label>
+        </div>
+        <div className="space-y-2">
+          <Input value={m.name} onChange={(e) => setM({ ...m, name: e.target.value })} placeholder="Name" />
+          <Input value={m.role ?? ""} onChange={(e) => setM({ ...m, role: e.target.value })} placeholder="Role" />
+          <Textarea rows={2} value={m.bio ?? ""} onChange={(e) => setM({ ...m, bio: e.target.value })} placeholder="Bio" />
+          <div className="flex items-center gap-2">
+            <Input type="number" className="w-24" value={m.sort_order ?? 0} onChange={(e) => setM({ ...m, sort_order: Number(e.target.value) })} />
+            <Button size="sm" onClick={() => onSave(m)}><Save className="h-3.5 w-3.5" /> Save</Button>
+            <Button size="sm" variant="outline" onClick={onDelete} className="text-destructive hover:text-destructive"><Trash2 className="h-3.5 w-3.5" /></Button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
