@@ -89,6 +89,28 @@ function AboutPage() {
                 <div>
                   <div className="font-semibold">{s.office_name}</div>
                   <div className="text-xs text-muted-foreground">{s.office_address}</div>
+                </div>
+              </div>
+              <a href={fullMap} target="_blank" rel="noreferrer" className="text-xs text-primary hover:underline">Open in OpenStreetMap →</a>
+            </div>
+            <iframe
+              title="Office location map"
+              src={mapSrc}
+              className="w-full h-[420px] border-0"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
+
+          <div className="glass rounded-2xl p-7 h-fit">
+            <h3 className="font-semibold">Get in touch</h3>
+            <div className="mt-4 space-y-3 text-sm">
+              <div className="flex items-start gap-3"><MapPin className="h-4 w-4 text-primary mt-0.5" /><div><div className="font-medium">{s.office_name}</div><div className="text-muted-foreground">{s.office_address}</div></div></div>
+              {s.contact_email && <div className="flex items-center gap-3"><Mail className="h-4 w-4 text-primary" /><a href={`mailto:${s.contact_email}`} className="hover:text-primary">{s.contact_email}</a></div>}
+              {s.contact_phone && <div className="flex items-center gap-3"><Phone className="h-4 w-4 text-primary" /><a href={`tel:${s.contact_phone}`} className="hover:text-primary">{s.contact_phone}</a></div>}
+              <div className="text-xs text-muted-foreground pt-2">Coordinates: {lat.toFixed(4)}, {lng.toFixed(4)}</div>
+            </div>
+          </div>
         </div>
 
         {/* Team */}
@@ -116,28 +138,6 @@ function AboutPage() {
             </div>
           </section>
         )}
-              </div>
-              <a href={fullMap} target="_blank" rel="noreferrer" className="text-xs text-primary hover:underline">Open in OpenStreetMap →</a>
-            </div>
-            <iframe
-              title="Office location map"
-              src={mapSrc}
-              className="w-full h-[420px] border-0"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          </div>
-
-          <div className="glass rounded-2xl p-7 h-fit">
-            <h3 className="font-semibold">Get in touch</h3>
-            <div className="mt-4 space-y-3 text-sm">
-              <div className="flex items-start gap-3"><MapPin className="h-4 w-4 text-primary mt-0.5" /><div><div className="font-medium">{s.office_name}</div><div className="text-muted-foreground">{s.office_address}</div></div></div>
-              {s.contact_email && <div className="flex items-center gap-3"><Mail className="h-4 w-4 text-primary" /><a href={`mailto:${s.contact_email}`} className="hover:text-primary">{s.contact_email}</a></div>}
-              {s.contact_phone && <div className="flex items-center gap-3"><Phone className="h-4 w-4 text-primary" /><a href={`tel:${s.contact_phone}`} className="hover:text-primary">{s.contact_phone}</a></div>}
-              <div className="text-xs text-muted-foreground pt-2">Coordinates: {lat.toFixed(4)}, {lng.toFixed(4)}</div>
-            </div>
-          </div>
-        </div>
       </main>
     </>
   );
