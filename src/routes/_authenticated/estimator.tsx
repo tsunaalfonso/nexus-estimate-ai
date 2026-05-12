@@ -71,7 +71,7 @@ function Estimator() {
         cost_min: data.cost_min, cost_max: data.cost_max,
         timeline_weeks_min: data.timeline_weeks_min, timeline_weeks_max: data.timeline_weeks_max,
         complexity_score: data.complexity_score, risk_level: data.risk_level,
-        tech_stack: data.tech_stack, breakdown: data.breakdown,
+        tech_stack: data.tech_stack, breakdown: { ...data.breakdown, components: data.components ?? [] },
         explanation: data.explanation, model: data.model,
       });
       if (eErr) throw eErr;
