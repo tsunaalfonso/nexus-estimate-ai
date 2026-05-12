@@ -101,16 +101,30 @@ function Dashboard() {
                   <h3 className="mt-3 font-semibold line-clamp-1">{p.title}</h3>
                   <p className="mt-1 text-sm text-muted-foreground line-clamp-2">{p.description}</p>
                   {est && (
-                    <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
-                      <div className="rounded-lg bg-secondary/40 px-3 py-2">
-                        <div className="text-muted-foreground">Cost</div>
-                        <div className="font-semibold">₱{Number(est.cost_min).toLocaleString()}–₱{Number(est.cost_max).toLocaleString()}</div>
+                    <>
+                      <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
+                        <div className="rounded-lg bg-secondary/40 px-3 py-2">
+                          <div className="text-muted-foreground">Cost</div>
+                          <div className="font-semibold">₱{Number(est.cost_min).toLocaleString()}–₱{Number(est.cost_max).toLocaleString()}</div>
+                        </div>
+                        <div className="rounded-lg bg-secondary/40 px-3 py-2">
+                          <div className="text-muted-foreground">Timeline</div>
+                          <div className="font-semibold">{est.timeline_weeks_min}–{est.timeline_weeks_max} wk</div>
+                        </div>
                       </div>
-                      <div className="rounded-lg bg-secondary/40 px-3 py-2">
-                        <div className="text-muted-foreground">Timeline</div>
-                        <div className="font-semibold">{est.timeline_weeks_min}–{est.timeline_weeks_max} wk</div>
-                      </div>
-                    </div>
+                      <Button size="sm" variant="outline" className="mt-3 w-full" onClick={() => downloadEstimationPdf({
+                        title: p.title, description: p.description ?? "", type: TYPE_LABEL[p.type] ?? p.type,
+                        result: {
+                          cost_min: est.cost_min, cost_max: est.cost_max,
+                          timeline_weeks_min: est.timeline_weeks_min, timeline_weeks_max: est.timeline_weeks_max,
+                          complexity_score: est.complexity_score, risk_level: est.risk_level,
+                          tech_stack: est.tech_stack ?? [], breakdown: est.breakdown ?? { phases: [] },
+                          components: (est.breakdown as any)?.components, explanation: est.explanation ?? "",
+                        },
+                      })}>
+                        <Download className="h-3.5 w-3.5" /> Download PDF
+                      </Button>
+                    </>
                   )}
                 </div>
               );
