@@ -16,7 +16,7 @@ function Admin() {
     enabled: isAdmin,
     queryFn: async () => {
       const [profiles, projects, estimations, events] = await Promise.all([
-        supabase.from("profiles").select("id, plan, created_at"),
+        supabase.from("profiles").select("id, full_name, plan, created_at").order("created_at", { ascending: false }),
         supabase.from("projects").select("id, type, created_at"),
         supabase.from("estimations").select("id, cost_min, cost_max, complexity_score, created_at"),
         supabase.from("usage_events").select("event, created_at").order("created_at", { ascending: false }).limit(50),
@@ -100,6 +100,38 @@ function Admin() {
             ))}
             {(data?.events ?? []).length === 0 && <div className="text-sm text-muted-foreground">No activity yet.</div>}
           </div>
+        </div>
+      </div>
+
+      <div className="mt-8 glass rounded-2xl p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-semibold">New users</h3>
+          <span className="text-xs text-muted-foreground">{profiles.length} total</span>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-xs uppercase tracking-wider text-muted-foreground border-b border-border/40">
+                <th className="py-2 pr-3">Name</th>
+                <th className="py-2 pr-3">Plan</th>
+                <th className="py-2 pr-3">Joined</th>
+              </tr>
+            </thead>
+            <tbody>
+              {profiles.slice(0, 15).map((p: any) => (
+                <tr key={p.id} className="border-b border-border/20 last:border-0">
+                  <td className="py-2 pr-3 font-medium">{p.full_name ?? "—"}</td>
+                  <td className="py-2 pr-3">
+                    <span className="text-xs px-2 py-0.5 rounded-md bg-primary/15 text-primary border border-primary/30 capitalize">{p.plan}</span>
+                  </td>
+                  <td className="py-2 pr-3 text-muted-foreground text-xs">{new Date(p.created_at).toLocaleString()}</td>
+                </tr>
+              ))}
+              {profiles.length === 0 && (
+                <tr><td colSpan={3} className="py-4 text-center text-sm text-muted-foreground">No users yet.</td></tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </main>
