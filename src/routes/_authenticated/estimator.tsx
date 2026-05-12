@@ -263,7 +263,7 @@ function Estimator() {
 
           <div className="flex flex-wrap gap-3">
             <Button variant="outline" onClick={() => { setStep(1); setResult(null); setTitle(""); setDescription(""); setFeatures(""); }}>New estimation</Button>
-            <Button className="bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-glow" onClick={() => downloadPdf({ title, description, type: type!, result })}>
+            <Button className="bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-glow" onClick={() => downloadEstimationPdf({ title, description, type: type!, result })}>
               <Download className="h-4 w-4" /> Download PDF
             </Button>
           </div>
