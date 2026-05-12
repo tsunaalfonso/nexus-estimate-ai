@@ -162,7 +162,7 @@ function Estimator() {
           </div>
           <div className="glass rounded-2xl p-6 h-fit">
             <Brain className="h-7 w-7 text-primary" />
-            <h3 className="mt-4 font-semibold">How NOVA estimates</h3>
+            <h3 className="mt-4 font-semibold">How Cael estimates</h3>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               <li>• Parses scope, integrations, complexity</li>
               <li>• Cross-references global market rates</li>
@@ -262,7 +262,7 @@ function Estimator() {
 
           <div className="flex flex-wrap gap-3">
             <Button variant="outline" onClick={() => { setStep(1); setResult(null); setTitle(""); setDescription(""); setFeatures(""); }}>New estimation</Button>
-            <Button className="bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-glow" onClick={() => toast.info("PDF export coming soon — talk to NOVA below to refine!")}>
+            <Button className="bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-glow" onClick={() => toast.info("PDF export coming soon — talk to Cael below to refine!")}>
               Export PDF (soon)
             </Button>
           </div>

@@ -15,7 +15,7 @@ export function ChatWidget() {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([
-    { role: "assistant", content: "Hi! I'm **NOVA**, your AI project assistant. Ask me anything about scoping, estimation, or tech stack choices." },
+    { role: "assistant", content: "Hi! I'm **Cael**, your AI project assistant. Ask me anything about scoping, estimation, or tech stack choices." },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -109,7 +109,7 @@ export function ChatWidget() {
       <button
         onClick={() => setOpen((v) => !v)}
         className="fixed bottom-6 right-6 z-50 grid h-16 w-16 place-items-center rounded-full bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-glow anim-pulse-glow hover:scale-105 transition-transform"
-        aria-label="Chat with NOVA"
+        aria-label="Chat with Cael"
       >
         {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
         {!open && <span className="absolute -top-1 -right-1 grid h-5 w-5 place-items-center rounded-full bg-background text-[10px] font-bold border border-primary anim-float"><Sparkles className="h-3 w-3 text-primary" /></span>}
@@ -128,7 +128,7 @@ export function ChatWidget() {
               <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-400 ring-2 ring-background anim-pulse-glow" />
             </div>
             <div>
-              <div className="font-semibold leading-none">NOVA</div>
+              <div className="font-semibold leading-none">Cael</div>
               <div className="text-xs text-muted-foreground mt-1">AI Project Assistant · Online</div>
             </div>
           </div>
@@ -163,7 +163,7 @@ export function ChatWidget() {
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask NOVA anything…"
+                placeholder="Ask Cael anything…"
                 className="flex-1 rounded-xl bg-input/40 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring border border-border/40"
               />
               <Button type="submit" size="icon" disabled={!input.trim() || loading} className="bg-gradient-to-br from-primary to-accent">
