@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Sparkles, LogOut, LayoutDashboard, Shield } from "lucide-react";
+import { Sparkles, LogOut, LayoutDashboard, Shield, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -24,6 +24,7 @@ export function SiteNav() {
           <Link to="/about" className="px-3 py-2 text-muted-foreground hover:text-foreground" activeProps={{ className: "text-foreground" }}>About</Link>
           {user && <Link to="/dashboard" className="px-3 py-2 text-muted-foreground hover:text-foreground" activeProps={{ className: "text-foreground" }}>Dashboard</Link>}
           {user && <Link to="/estimator" className="px-3 py-2 text-muted-foreground hover:text-foreground" activeProps={{ className: "text-foreground" }}>New Estimate</Link>}
+          {user && <Link to="/meetings" className="px-3 py-2 text-muted-foreground hover:text-foreground inline-flex items-center gap-1" activeProps={{ className: "text-foreground" }}><CalendarDays className="h-3.5 w-3.5" />Meetings</Link>}
           {isAdmin && <Link to="/admin" className="px-3 py-2 text-muted-foreground hover:text-foreground inline-flex items-center gap-1" activeProps={{ className: "text-foreground" }}><Shield className="h-3.5 w-3.5" />Admin</Link>}
         </nav>
 

@@ -132,6 +132,45 @@ export type Database = {
           },
         ]
       }
+      meetings: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          duration_minutes: number
+          id: string
+          notes: string | null
+          requested_at: string
+          status: Database["public"]["Enums"]["meeting_status"]
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          notes?: string | null
+          requested_at: string
+          status?: Database["public"]["Enums"]["meeting_status"]
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          notes?: string | null
+          requested_at?: string
+          status?: Database["public"]["Enums"]["meeting_status"]
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -336,6 +375,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      meeting_status: "pending" | "accepted" | "declined" | "cancelled"
       plan_tier: "free" | "pro" | "business"
       project_type:
         | "thesis"
@@ -472,6 +512,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      meeting_status: ["pending", "accepted", "declined", "cancelled"],
       plan_tier: ["free", "pro", "business"],
       project_type: [
         "thesis",
