@@ -142,9 +142,104 @@ function Admin() {
         </div>
       </div>
 
+      <MeetingsManager />
       <SiteSettingsEditor />
       <TeamEditor />
     </main>
+  );
+}
+
+function MeetingsManager() {
+  const qc = useQueryClient();
+  const { data: meetings = [], isLoading } = useQuery({
+    queryKey: ["admin-meetings"],
+    queryFn: async () => {
+      const { data, error } = await (supabase as any)
+        .from("meetings")
+        .select("*, profiles:profiles!meetings_user_id_fkey(full_name)")
+        .order("requested_at", { ascending: false });
+      if (error) {
+        // fall back without join if relation is not defined
+        const { data: d2 } = await (supabase as any).from("meetings").select("*").order("requested_at", { ascending: false });
+        return d2 ?? [];
+      }
+      return data ?? [];
+    },
+  });
+
+  const setStatus = useMutation({
+    mutationFn: async ({ id, status, admin_notes }: { id: string; status: string; admin_notes?: string }) => {
+      const payload: any = { status };
+      if (admin_notes !== undefined) payload.admin_notes = admin_notes;
+      const { error } = await (supabase as any).from("meetings").update(payload).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Meeting updated");
+      qc.invalidateQueries({ queryKey: ["admin-meetings"] });
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+
+  const pending = meetings.filter((m: any) => m.status === "pending").length;
+
+  return (
+    <div className="mt-8 glass rounded-2xl p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h3 className="font-semibold flex items-center gap-2"><CalendarIcon className="h-4 w-4 text-primary" /> Meeting requests</h3>
+          <p className="text-xs text-muted-foreground">Review and confirm meeting times requested by clients.</p>
+        </div>
+        <span className="text-xs px-2 py-1 rounded-md bg-primary/15 text-primary border border-primary/30">{pending} pending</span>
+      </div>
+
+      {isLoading ? (
+        <p className="text-sm text-muted-foreground">Loading…</p>
+      ) : meetings.length === 0 ? (
+        <p className="text-sm text-muted-foreground py-6 text-center">No meeting requests yet.</p>
+      ) : (
+        <div className="space-y-3">
+          {meetings.map((m: any) => (
+            <MeetingRow key={m.id} m={m} onAct={(status, admin_notes) => setStatus.mutate({ id: m.id, status, admin_notes })} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MeetingRow({ m, onAct }: { m: any; onAct: (status: string, admin_notes?: string) => void }) {
+  const [note, setNote] = useState<string>(m.admin_notes ?? "");
+  const cls = m.status === "accepted" ? "border-emerald-500/30 bg-emerald-500/5"
+    : m.status === "declined" ? "border-red-500/30 bg-red-500/5"
+    : m.status === "cancelled" ? "border-border bg-muted/30"
+    : "border-yellow-500/30 bg-yellow-500/5";
+  return (
+    <div className={`rounded-xl border p-4 ${cls}`}>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <div className="font-medium">{m.title}</div>
+          <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Clock className="h-3.5 w-3.5" />
+            {format(new Date(m.requested_at), "PPP p")} · {m.duration_minutes} min
+          </div>
+          <div className="text-xs text-muted-foreground mt-1">
+            Requested by {m.profiles?.full_name ?? m.user_id?.slice(0, 8)}
+          </div>
+          {m.notes && <p className="mt-2 text-sm">{m.notes}</p>}
+        </div>
+        <span className="text-xs px-2 py-1 rounded-md border capitalize">{m.status}</span>
+      </div>
+      <div className="mt-3 grid sm:grid-cols-[1fr_auto_auto] gap-2 items-center">
+        <Input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Note to client (optional)" />
+        <Button size="sm" onClick={() => onAct("accepted", note)} className="bg-emerald-600 hover:bg-emerald-500 text-white">
+          <CheckCircle2 className="h-3.5 w-3.5" /> Accept
+        </Button>
+        <Button size="sm" variant="outline" onClick={() => onAct("declined", note)} className="text-destructive hover:text-destructive">
+          <XCircle className="h-3.5 w-3.5" /> Decline
+        </Button>
+      </div>
+    </div>
   );
 }
 
