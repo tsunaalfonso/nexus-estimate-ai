@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Sparkles, LogOut, LayoutDashboard, Shield } from "lucide-react";
+import { Sparkles, LogOut, LayoutDashboard, Shield, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 
